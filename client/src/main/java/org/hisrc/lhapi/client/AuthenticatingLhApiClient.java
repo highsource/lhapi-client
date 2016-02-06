@@ -6,12 +6,13 @@ import org.hisrc.lhapi.client.invoker.ApiClient;
 import org.hisrc.lhapi.client.invoker.ApiException;
 import org.hisrc.lhapi.client.model.AccessToken;
 import org.hisrc.lhapi.client.model.FlightStatusResponse;
+import org.hisrc.lhapi.client.model.FlightsStatusResponse;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class OAuth2LhApiClient implements LhApiClient {
+public class AuthenticatingLhApiClient implements LhApiClient {
 
 	// Expiration buffer - 15 minutes
 	private static final int EXPIRATION_BUFFER = 15 * 60 * 1000;
@@ -27,7 +28,7 @@ public class OAuth2LhApiClient implements LhApiClient {
 
 	private long accessTokenExpirationTimestamp = Long.MIN_VALUE;
 
-	public OAuth2LhApiClient(final String clientId, final String clientSecret) {
+	public AuthenticatingLhApiClient(final String clientId, final String clientSecret) {
 		Validate.notNull(clientId);
 		Validate.notNull(clientSecret);
 		this.clientId = clientId;
@@ -58,14 +59,14 @@ public class OAuth2LhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public FlightStatusResponse arrivalsStatus(String airportCode, LocalDateTime from, LocalDateTime until)
+	public FlightsStatusResponse arrivalsStatus(String airportCode, LocalDateTime from, LocalDateTime until)
 			throws ApiException {
 		return executeAuthentified(
 				() -> operationsFlightstatusArrivalsAirportCodeFromUntilGet(airportCode, from, until));
 	}
 
 	@Override
-	public FlightStatusResponse departuresStatus(String airportCode, LocalDateTime from, LocalDateTime until)
+	public FlightsStatusResponse departuresStatus(String airportCode, LocalDateTime from, LocalDateTime until)
 			throws ApiException {
 		return executeAuthentified(
 				() -> operationsFlightstatusDeparturesAirportCodeFromUntilGet(airportCode, from, until));
@@ -73,9 +74,9 @@ public class OAuth2LhApiClient implements LhApiClient {
 
 	private <T> T executeAuthentified(ApiOperation<T> operation) throws ApiException {
 		final long currentTimestamp = System.currentTimeMillis();
-		// if (this.accessTokenExpirationTimestamp < currentTimestamp) {
-		// refreshAccessToken();
-		// }
+		if (this.accessTokenExpirationTimestamp < currentTimestamp) {
+			refreshAccessToken();
+		}
 		try {
 			// Try executing the operation
 			return operation.execute();
@@ -95,7 +96,7 @@ public class OAuth2LhApiClient implements LhApiClient {
 		return this.api.operationsFlightstatusFlightNumberDateGet(flightNumber, dateAsString, null);
 	}
 
-	private FlightStatusResponse operationsFlightstatusArrivalsAirportCodeFromUntilGet(String airportCode,
+	private FlightsStatusResponse operationsFlightstatusArrivalsAirportCodeFromUntilGet(String airportCode,
 			LocalDateTime from, LocalDateTime until) throws ApiException {
 
 		final String fromAsString = DATE_TIME_FORMATTER.print(from);
@@ -104,7 +105,7 @@ public class OAuth2LhApiClient implements LhApiClient {
 				null);
 	}
 
-	private FlightStatusResponse operationsFlightstatusDeparturesAirportCodeFromUntilGet(String airportCode,
+	private FlightsStatusResponse operationsFlightstatusDeparturesAirportCodeFromUntilGet(String airportCode,
 			LocalDateTime from, LocalDateTime until) throws ApiException {
 
 		final String fromAsString = DATE_TIME_FORMATTER.print(from);

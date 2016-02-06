@@ -113,7 +113,7 @@ paths:
         200:
           description: The status of all departures from a given airport within a specific time range
           schema: 
-            $ref: '#/definitions/FlightStatusResponse'
+            $ref: '#/definitions/FlightsStatusResponse'
 
   /operations/flightstatus/arrivals/{airportCode}/{from}/{until}:
     get:
@@ -154,7 +154,7 @@ paths:
         200:
           description: The status of all arrivals at a given airport within a specific time range
           schema: 
-            $ref: '#/definitions/FlightStatusResponse'
+            $ref: '#/definitions/FlightsStatusResponse'
   
   /operations/flightstatus/{flightNumber}/{date}:
     get:
@@ -211,6 +211,13 @@ definitions:
         type: integer
         format: int32
         description: The number of seconds until this token expires
+  FlightsStatusResponse:
+    type: object
+    required:
+      - FlightStatusResource
+    properties:
+      FlightStatusResource:
+        $ref: '#/definitions/FlightsStatusResource'
   FlightStatusResponse:
     type: object
     required:
@@ -218,13 +225,20 @@ definitions:
     properties:
       FlightStatusResource:
         $ref: '#/definitions/FlightStatusResource'
-  FlightStatusResource:
+  FlightsStatusResource:
     type: object
     required:
       - Flights
     properties:
       Flights:
         $ref: '#/definitions/Flights'
+  FlightStatusResource:
+    type: object
+    required:
+      - Flights
+    properties:
+      Flights:
+        $ref: '#/definitions/SingularFlights'
   Flights:
     type: object
     required:
@@ -234,6 +248,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Flight'
+  SingularFlights:
+    type: object
+    required:
+      - Flight
+    properties:
+      Flight:
+        $ref: '#/definitions/Flight'
   Flight:
     type: object
     required:
