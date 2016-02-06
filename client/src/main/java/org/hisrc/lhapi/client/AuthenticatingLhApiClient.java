@@ -93,7 +93,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 			throws ApiException {
 
 		final String dateAsString = DATE_FORMATTER.print(date);
-		return this.api.operationsFlightstatusFlightNumberDateGet(flightNumber, dateAsString, null);
+		return this.api.operationsFlightstatusFlightNumberDateGet(flightNumber, dateAsString);
 	}
 
 	private FlightsStatusResponse operationsFlightstatusArrivalsAirportCodeFromUntilGet(String airportCode,
@@ -101,8 +101,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 
 		final String fromAsString = DATE_TIME_FORMATTER.print(from);
 		final String untilAsString = DATE_TIME_FORMATTER.print(until);
-		return this.api.operationsFlightstatusArrivalsAirportCodeFromUntilGet(airportCode, fromAsString, untilAsString,
-				null);
+		return this.api.operationsFlightstatusArrivalsAirportCodeFromUntilGet(airportCode, fromAsString, untilAsString);
 	}
 
 	private FlightsStatusResponse operationsFlightstatusDeparturesAirportCodeFromUntilGet(String airportCode,
@@ -111,7 +110,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 		final String fromAsString = DATE_TIME_FORMATTER.print(from);
 		final String untilAsString = DATE_TIME_FORMATTER.print(until);
 		return this.api.operationsFlightstatusDeparturesAirportCodeFromUntilGet(airportCode, fromAsString,
-				untilAsString, null);
+				untilAsString);
 	}
 
 	@FunctionalInterface

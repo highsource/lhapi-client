@@ -86,12 +86,6 @@ paths:
         - application/json
       parameters:
         -
-          name: Authorization
-          in: header
-          description: Authorization token in form "Bearer token"
-          required: false
-          type: string
-        -
           name: airportCode
           description: The IATA code of the departure airport (e.g. HAM)
           in: path
@@ -127,12 +121,6 @@ paths:
         - application/json
       parameters:
         -
-          name: Authorization
-          in: header
-          description: Authorization token in form "Bearer token"
-          required: false
-          type: string
-        -
           name: airportCode
           description: The IATA code of the arrival airport (e.g. ZRH)
           in: path
@@ -167,12 +155,6 @@ paths:
       produces:
         - application/json
       parameters:
-        -
-          name: Authorization
-          in: header
-          description: Authorization token in form "Bearer token"
-          required: false
-          type: string
         -
           name: flightNumber
           description: The flight number including carrier code and any suffix, e.g. LH400

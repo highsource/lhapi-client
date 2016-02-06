@@ -21,6 +21,44 @@ Add the following dependency to your project:
 	<version>...</version>
 </dependency>
 ```
+
+### Using the client in your Java code
+
+### Creating the client
+
+```
+LhApiClient client = new AuthenticatingLhApiClient(clientId, clientSecret);
+```
+
+### Getting the flight status
+
+Flight status of `LO379` (today):
+
+```
+FlightStatusResponse departuresStatus = client.flightStatus("LO379", LocalDate.now());
+
+### Getting departures
+
+Departures from DME +/- one hour from now:
+
+```
+FlightsStatusResponse departuresStatus = client.arrivalsStatus(
+	"DME",
+	LocalDateTime.now().minusHours(1),
+	LocalDateTime.now().plusHours(1));
+```
+
+### Getting arrivals
+
+Arrivals to FRA +/- one hour from now:
+
+```
+FlightsStatusResponse arrivalsStatus = client.arrivalsStatus(
+	"FRA",
+	LocalDateTime.now().minusHours(1),
+	LocalDateTime.now().plusHours(1));
+```
+
 ## License
 
 Please note that this code is currently under the [GPL-3.0](https://opensource.org/licenses/GPL-3.0) license. We plan to switch to MIT or BSD or dual licensing in the future.
