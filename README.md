@@ -36,6 +36,7 @@ Flight status of `LO379` (today):
 
 ```
 FlightStatusResponse departuresStatus = client.flightStatus("LO379", LocalDate.now());
+```
 
 ### Getting departures
 
