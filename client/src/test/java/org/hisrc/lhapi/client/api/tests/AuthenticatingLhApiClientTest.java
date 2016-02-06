@@ -46,7 +46,7 @@ public class AuthenticatingLhApiClientTest {
 
 	@Test
 	public void returnsDeparturesStatus() throws ApiException {
-		FlightsStatusResponse departuresStatus = sut.arrivalsStatus("DME", LocalDateTime.now().minusHours(1),
+		FlightsStatusResponse departuresStatus = sut.departuresStatus("DME", LocalDateTime.now().minusHours(1),
 				LocalDateTime.now().plusHours(1));
 		Assert.assertNotNull(departuresStatus);
 		System.out.println(departuresStatus);

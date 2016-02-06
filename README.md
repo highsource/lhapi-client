@@ -43,7 +43,7 @@ FlightStatusResponse departuresStatus = client.flightStatus("LO379", LocalDate.n
 Departures from DME +/- one hour from now:
 
 ```
-FlightsStatusResponse departuresStatus = client.arrivalsStatus(
+FlightsStatusResponse departuresStatus = client.departuresStatus(
 	"DME",
 	LocalDateTime.now().minusHours(1),
 	LocalDateTime.now().plusHours(1));
