@@ -4,9 +4,16 @@ import org.apache.commons.lang3.Validate;
 import org.hisrc.lhapi.client.api.DefaultApi;
 import org.hisrc.lhapi.client.invoker.ApiClient;
 import org.hisrc.lhapi.client.invoker.ApiException;
+import org.hisrc.lhapi.client.invoker.CustomizedApiClient;
 import org.hisrc.lhapi.client.model.AccessToken;
+import org.hisrc.lhapi.client.model.AircraftSummariesResponse;
+import org.hisrc.lhapi.client.model.AirlinesResponse;
+import org.hisrc.lhapi.client.model.AirportsResponse;
+import org.hisrc.lhapi.client.model.CitiesResponse;
+import org.hisrc.lhapi.client.model.CountriesResponse;
 import org.hisrc.lhapi.client.model.FlightStatusResponse;
 import org.hisrc.lhapi.client.model.FlightsStatusResponse;
+import org.hisrc.lhapi.client.model.NearestAirportsResponse;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -21,7 +28,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
 	private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm");
 
-	private final ApiClient apiClient = new ApiClient();
+	private final ApiClient apiClient = new CustomizedApiClient();
 	private final DefaultApi api = new DefaultApi(this.apiClient);
 	private final String clientId;
 	private final String clientSecret;
@@ -51,6 +58,60 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 		}
 		this.apiClient.setApiKey(API_KEY_PREFIX_BEARER + " " + token);
 		this.accessTokenExpirationTimestamp = currentTimestamp + (expiresIn.intValue() * 1000) - EXPIRATION_BUFFER;
+	}
+
+	@Override
+	public CountriesResponse countries(String countryCode, String lang) throws ApiException {
+		final String _lang = lang == null ? "EN" : lang;
+		if (countryCode == null) {
+			return executeAuthentified(() -> referencesCountriesGet(_lang));
+		} else {
+			return executeAuthentified(() -> referencesCountriesCountryCodeGet(countryCode, _lang));
+		}
+	}
+
+	@Override
+	public CitiesResponse cities(String cityCode, String lang) throws ApiException {
+		final String _lang = lang == null ? "EN" : lang;
+		if (cityCode == null) {
+			return executeAuthentified(() -> referencesCitiesGet(_lang));
+		} else {
+			return executeAuthentified(() -> referencesCitiesCityCodeGet(cityCode, _lang));
+		}
+	}
+
+	@Override
+	public AirportsResponse airports(String airportCode, String lang, Boolean lhOperates) throws ApiException {
+		final String _lang = lang == null ? "EN" : lang;
+		if (airportCode == null) {
+			return executeAuthentified(() -> referencesAirportsGet(_lang, lhOperates));
+		} else {
+			return executeAuthentified(() -> referencesAirportsAirportCodeGet(airportCode, _lang, lhOperates));
+		}
+	}
+
+	@Override
+	public NearestAirportsResponse nearestAirports(Double latitude, Double longitude, String lang) throws ApiException {
+		final String _lang = lang == null ? "EN" : lang;
+		return executeAuthentified(() -> referencesAirportsNearestLatitudelongitudeGet(latitude, longitude, _lang));
+	}
+
+	@Override
+	public AirlinesResponse airlines(String airlineCode) throws ApiException {
+		if (airlineCode == null) {
+			return executeAuthentified(() -> referencesAirlinesGet());
+		} else {
+			return executeAuthentified(() -> referencesAirlinesAirlineCodeGet(airlineCode));
+		}
+	}
+
+	@Override
+	public AircraftSummariesResponse aircraftSummaries(String aircraftCode) throws ApiException {
+		if (aircraftCode == null) {
+			return executeAuthentified(() -> referencesAircraftGet());
+		} else {
+			return executeAuthentified(() -> referencesAircraftAircraftCodeGet(aircraftCode));
+		}
 	}
 
 	@Override
@@ -87,6 +148,53 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 			refreshAccessToken();
 			return operation.execute();
 		}
+	}
+
+	private CountriesResponse referencesCountriesGet(String lang) throws ApiException {
+		return this.api.referencesCountriesGet(lang);
+	}
+
+	private CountriesResponse referencesCountriesCountryCodeGet(String countryCode, String lang) throws ApiException {
+		return this.api.referencesCountriesCountryCodeGet(countryCode, lang);
+	}
+
+	private CitiesResponse referencesCitiesGet(String lang) throws ApiException {
+		return this.api.referencesCitiesGet(lang);
+	}
+
+	private CitiesResponse referencesCitiesCityCodeGet(String cityCode, String lang) throws ApiException {
+		return this.api.referencesCitiesCityCodeGet(cityCode, lang);
+	}
+
+	private AirportsResponse referencesAirportsGet(String lang, Boolean lhOperated) throws ApiException {
+		return this.api.referencesAirportsGet(lang, lhOperated == null ? null : lhOperated.toString());
+	}
+
+	private AirportsResponse referencesAirportsAirportCodeGet(String airportCode, String lang, Boolean lhOperated)
+			throws ApiException {
+		return this.api.referencesAirportsAirportCodeGet(airportCode, lang,
+				lhOperated == null ? null : lhOperated.toString());
+	}
+
+	private NearestAirportsResponse referencesAirportsNearestLatitudelongitudeGet(Double latitude, Double longitude,
+			String lang) throws ApiException {
+		return this.api.referencesAirportsNearestLatitudelongitudeGet(latitude, longitude, lang);
+	}
+
+	private AirlinesResponse referencesAirlinesGet() throws ApiException {
+		return this.api.referencesAirlinesGet();
+	}
+
+	private AirlinesResponse referencesAirlinesAirlineCodeGet(String airlineCode) throws ApiException {
+		return this.api.referencesAirlinesAirlineCodeGet(airlineCode);
+	}
+
+	private AircraftSummariesResponse referencesAircraftGet() throws ApiException {
+		return this.api.referencesAircraftGet();
+	}
+
+	private AircraftSummariesResponse referencesAircraftAircraftCodeGet(String aircraftCode) throws ApiException {
+		return this.api.referencesAircraftAircraftCodeGet(aircraftCode);
 	}
 
 	private FlightStatusResponse operationsFlightstatusFlightNumberDateGet(String flightNumber, LocalDate date)

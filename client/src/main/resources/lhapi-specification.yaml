@@ -74,6 +74,289 @@ paths:
           schema:
             $ref: '#/definitions/access_token'
 
+  /references/countries/:
+    get:
+      description: Retreive a list of all countries or details of one specific country. If a country is specified, there is an option to limit the response to a given language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of all countries or details of one specific country.
+          schema: 
+            $ref: '#/definitions/CountriesResponse'      
+
+  /references/countries/{countryCode}:
+    get:
+      description: Retreive a list of all countries or details of one specific country. If a country is specified, there is an option to limit the response to a given language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: countryCode
+          description: Optional 2 letter ISO 3166-1 country code.
+          in: path
+          required: true
+          type: string
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of all countries or details of one specific country.
+          schema: 
+            $ref: '#/definitions/CountriesResponse'      
+
+  /references/cities/:
+    get:
+      description: Retreive a list of all city or details of one specific city. If a city is specified, there is an option to limit the response to a given language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of all city or details of one specific city.
+          schema: 
+            $ref: '#/definitions/CitiesResponse'      
+
+  /references/cities/{cityCode}:
+    get:
+      description: Retreive a list of all city or details of one specific city. If a city is specified, there is an option to limit the response to a given language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: cityCode
+          description: Optional 3 letter IATA city code
+          in: path
+          required: true
+          type: string
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of all city or details of one specific city.
+          schema: 
+            $ref: '#/definitions/CitiesResponse'      
+
+  /references/airports/:
+    get:
+      description: Reference data about airports. With no parameters, all airports are returned in all languages. This is a large data set. If an airport code is specified there is the option to recieve the description in a single language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+        -
+          name: LHoperated
+          description: Optional query parameter. Restrict the results to locations with flights operated by LH (true, false).
+          in: query
+          required: false
+          type: string
+      responses:
+        200:
+          description: Reference data about airports.
+          schema: 
+            $ref: '#/definitions/AirportsResponse'      
+
+  /references/airports/nearest/{latitude},{longitude}:
+    get:
+      description: Find the 5 closest airports to the given latitude and longitude, irrespective of the radius of the reference point.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: latitude
+          description: Latitude in decimal format to at most 3 decimal places
+          in: path
+          required: true
+          type: number
+          format: double
+        -
+          name: longitude
+          description: Longitude in decimal format to at most 3 decimal places
+          in: path
+          required: true
+          type: number
+          format: double
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: The 5 closest airports to the given latitude and longitude, irrespective of the radius of the reference point.
+          schema: 
+            $ref: '#/definitions/NearestAirportsResponse'      
+
+  /references/airports/{airportCode}:
+    get:
+      description: Reference data about airports. With no parameters, all airports are returned in all languages. This is a large data set. If an airport code is specified there is the option to recieve the description in a single language.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: airportCode
+          description: Optional 3 letter IATA airport code
+          in: path
+          required: true
+          type: string
+        -
+          name: lang
+          description: Optional query parameter. 2 letter ISO 3166-1 language code.
+          in: query
+          required: true
+          type: string
+        -
+          name: LHoperated
+          description: Optional query parameter. Restrict the results to locations with flights operated by LH (true, false).
+          in: query
+          required: false
+          type: string
+      responses:
+        200:
+          description: Reference data about airports.
+          schema: 
+            $ref: '#/definitions/AirportsResponse'      
+
+  /references/airlines/:
+    get:
+      description: Reference data about airlines. With no parameters, all airlines are returned.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Reference data about airlines.
+          schema: 
+            $ref: '#/definitions/AirlinesResponse'      
+
+  /references/airlines/{airlineCode}:
+    get:
+      description: Reference data about airlines. With no parameters, all airlines are returned.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: airlineCode
+          description: Optional 2-character IATA airline/carrier code
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Reference data about airlines.
+          schema: 
+            $ref: '#/definitions/AirlinesResponse'      
+
+  /references/aircraft/{aircraftCode}:
+    get:
+      description: Reference data about aircraft. With no parameters, all aircraft types are returned.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: aircraftCode
+          description: Optional 3-character IATA aircraft code.
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Reference data about aircraft.
+          schema: 
+            $ref: '#/definitions/AircraftSummariesResponse'      
+
+  /references/aircraft/:
+    get:
+      description: Reference data about aircraft. With no parameters, all aircraft types are returned.
+      security:
+        -
+          apiKey: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Reference data about aircraft.
+          schema: 
+            $ref: '#/definitions/AircraftSummariesResponse'      
+
   /operations/flightstatus/departures/{airportCode}/{from}/{until}:
     get:
       description: The status of all departures from a given airport within a specific time range
@@ -193,6 +476,331 @@ definitions:
         type: integer
         format: int32
         description: The number of seconds until this token expires
+  CountriesResponse:
+    type: object
+    required:
+      - CountryResource
+    properties:
+      CountryResource:
+        $ref: '#/definitions/CountryResource'
+  CountryResource:
+    type: object
+    required:
+      - Countries
+    properties:
+      Countries:
+        $ref: '#/definitions/Countries'
+  Countries:
+    type: object
+    required:
+      - Country
+    properties:
+      Country:
+        type: array
+        items:
+          $ref: '#/definitions/Country'
+  Country:
+    type: object
+    required:
+      - CountryCode
+      - ZoneCode
+      - Names
+    properties:
+      CountryCode:
+        type: string
+      ZoneCode:
+        type: string
+      Names:
+        $ref: '#/definitions/Names'
+  CitiesResponse:
+    type: object
+    required:
+      - CityResource
+    properties:
+      CityResource:
+        $ref: '#/definitions/CityResource'
+  CityResource:
+    type: object
+    required:
+      - Cities
+    properties:
+      Cities:
+        $ref: '#/definitions/Cities'
+  Cities:
+    type: object
+    required:
+      - City
+    properties:
+      City:
+        type: array
+        items:
+          $ref: '#/definitions/City'
+  City:
+    type: object
+    required:
+      - CityCode
+      - CountryCode
+      - Position
+      - Names
+      - Airports
+    properties:
+      CityCode:
+        type: string
+      CountryCode:
+        type: string
+      Position:
+        $ref: '#/definitions/Position'
+      Names:
+        $ref: '#/definitions/Names'
+      Airports:
+        $ref: '#/definitions/AirportCodes'
+  AirportsResponse:
+    type: object
+    required:
+      - AirportResource
+    properties:
+      AirportResource:
+        $ref: '#/definitions/AirportResource'
+  AirportResource:
+    type: object
+    required:
+      - Airports
+    properties:
+      Airports:
+        $ref: '#/definitions/Airports'
+  Airports:
+    type: object
+    required:
+      - Airport
+    properties:
+      Airport:
+        type: array
+        items:
+          $ref: '#/definitions/Airport'
+  AirportCodes:
+    type: object
+    required:
+      - AirportCode
+    properties:
+      AirportCode:
+        type: array
+        items:
+          type: string
+  Airport:
+    type: object
+    required:
+      - AirportCode
+      - CityCode
+      - CountryCode
+      - Position
+      - Names
+    properties:
+      AirportCode:
+        type: string
+      CityCode:
+        type: string
+      CountryCode:
+        type: string
+      Position:
+        $ref: '#/definitions/Position'
+      LocationType:
+        type: string
+        enum:
+          - Airport
+          - RailwayStation
+          - BusStation
+      Names:
+        $ref: '#/definitions/Names'
+      Distance:
+        $ref: '#/definitions/Distance'
+  NearestAirportsResponse:
+    type: object
+    required:
+      - NearestAirportResource
+    properties:
+      NearestAirportResource:
+        $ref: '#/definitions/AirportResource'
+  AirlinesResponse:
+    type: object
+    required:
+      - AirlineResource
+    properties:
+      AirlineResource:
+        $ref: '#/definitions/AirlineResource'
+  AirlineResource:
+    type: object
+    required:
+      - Airlines
+    properties:
+      Airlines:
+        $ref: '#/definitions/Airlines'
+  Airlines:
+    type: object
+    required:
+      - Airline
+    properties:
+      Airline:
+        type: array
+        items:
+          $ref: '#/definitions/Airline'
+  Airline:
+    type: object
+    required:
+      - OtherIDs
+      - AirlineID
+      - AirlineID_ICAO
+      - Names
+    properties:
+      OtherIDs:
+        $ref: '#/definitions/OtherIDs'
+      AirlineID:
+        type: string
+      AirlineID_ICAO:
+        type: string
+      Names:
+        $ref: '#/definitions/Names'
+  OtherIDs:
+    type: object
+    required:
+      - OtherID
+    properties:
+      OtherID:
+        type: array
+        items:
+          $ref: '#/definitions/OtherID'
+  OtherID:
+    type: object
+    required:
+      - '@Description'
+      - '$'
+    properties:
+      '@Description':
+          type: string
+      '$':
+          type: string
+  AircraftSummariesResponse:
+    type: object
+    required:
+      - AircraftResource
+    properties:
+      AircraftResource:
+        $ref: '#/definitions/AircraftResource'
+  AircraftResource:
+    type: object
+    required:
+      - AircraftSummaries
+    properties:
+      AircraftSummaries:
+        $ref: '#/definitions/AircraftSummaries'
+  AircraftSummaries:
+    type: object
+    required:
+      - AircraftSummary
+    properties:
+      AircraftSummary:
+        type: array
+        items:
+          $ref: '#/definitions/AircraftSummary'
+  AircraftSummary:
+    type: object
+    required:
+      - Names
+      - AirlineEquipCode
+      - MediaLinks
+    properties:
+      Names:
+        $ref: '#/definitions/Names'
+      AirlineEquipCode:
+        type: string
+      MediaLinks:
+        $ref: '#/definitions/MediaLinks'
+      Comments:
+        $ref: '#/definitions/Comments'
+  MediaLinks:
+    type: object
+    required:
+      - MediaLink
+    properties:
+      MediaLink:
+        type: array
+        items:
+          $ref: '#/definitions/MediaLink'
+  MediaLink:
+    type: object
+    required:
+      - '@LanguageCode'
+      - '$'
+    properties:
+      '@LanguageCode':
+        type: string
+      '$':
+        type: string
+  Comments:
+    type: object
+    required:
+      - Comment
+    properties:
+      Comment:
+        type: array
+        items:
+          $ref: '#/definitions/Comment'
+  Comment:
+    type: object
+    required:
+      - '@LanguageCode'
+      - '$'
+    properties:
+      '@LanguageCode':
+        type: string
+      '$':
+        type: string
+  Position:
+    type: object
+    required:
+      - Coordinate
+    properties:
+      Coordinate:
+        $ref: '#/definitions/Coordinate'
+  Coordinate:
+    type: object
+    required:
+      - Latitude
+      - Longitude
+    properties:
+      Latitude:
+          type: number
+          format: double
+      Longitude:
+          type: number
+          format: double
+  Distance:
+    type: object
+    required:
+      - Value
+      - UOM
+    properties:
+      Value:
+          type: number
+          format: double
+      UOM:
+          type: string
+  Names:
+    type: object
+    required:
+      - Name
+    properties:
+      Name:
+        $ref: '#/definitions/Name'
+  Name:
+    type: object
+    required:
+      - '@LanguageCode'
+      - '$'
+    properties:
+      '@LanguageCode':
+          type: string
+      '$':
+          type: string
   FlightsStatusResponse:
     type: object
     required:
@@ -220,7 +828,7 @@ definitions:
       - Flights
     properties:
       Flights:
-        $ref: '#/definitions/SingularFlights'
+        $ref: '#/definitions/Flights'
   Flights:
     type: object
     required:
@@ -230,13 +838,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Flight'
-  SingularFlights:
-    type: object
-    required:
-      - Flight
-    properties:
-      Flight:
-        $ref: '#/definitions/Flight'
   Flight:
     type: object
     required:

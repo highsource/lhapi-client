@@ -7,8 +7,14 @@ import java.util.Properties;
 import org.hisrc.lhapi.client.AuthenticatingLhApiClient;
 import org.hisrc.lhapi.client.LhApiClient;
 import org.hisrc.lhapi.client.invoker.ApiException;
+import org.hisrc.lhapi.client.model.AircraftSummariesResponse;
+import org.hisrc.lhapi.client.model.AirlinesResponse;
+import org.hisrc.lhapi.client.model.AirportsResponse;
+import org.hisrc.lhapi.client.model.CitiesResponse;
+import org.hisrc.lhapi.client.model.CountriesResponse;
 import org.hisrc.lhapi.client.model.FlightStatusResponse;
 import org.hisrc.lhapi.client.model.FlightsStatusResponse;
+import org.hisrc.lhapi.client.model.NearestAirportsResponse;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;
@@ -41,15 +47,13 @@ public class AuthenticatingLhApiClientTest {
 		FlightsStatusResponse arrivalsStatus = sut.arrivalsStatus("FRA", LocalDateTime.now().minusHours(1),
 				LocalDateTime.now().plusHours(1));
 		Assert.assertNotNull(arrivalsStatus);
-		System.out.println(arrivalsStatus);
 	}
 
 	@Test
 	public void returnsDeparturesStatus() throws ApiException {
-		FlightsStatusResponse departuresStatus = sut.departuresStatus("DME", LocalDateTime.now().minusHours(1),
+		FlightsStatusResponse departuresStatus = sut.departuresStatus("FRA", LocalDateTime.now().minusHours(1),
 				LocalDateTime.now().plusHours(1));
 		Assert.assertNotNull(departuresStatus);
-		System.out.println(departuresStatus);
 	}
 
 	@Test
@@ -57,13 +61,51 @@ public class AuthenticatingLhApiClientTest {
 		// "SQ2379"
 		FlightStatusResponse departuresStatus = sut.flightStatus("LO379", LocalDate.now());
 		Assert.assertNotNull(departuresStatus);
-		System.out.println(departuresStatus);
 	}
+
 	@Test
 	public void returnsAnotherFlightStatus() throws ApiException {
 		// "SQ2379"
 		FlightStatusResponse departuresStatus = sut.flightStatus("SQ2379", LocalDate.now());
 		Assert.assertNotNull(departuresStatus);
-		System.out.println(departuresStatus);
 	}
+
+	@Test
+	public void returnsCountries() throws ApiException {
+		CountriesResponse countries = sut.countries(null, null);
+		Assert.assertTrue(countries.getCountryResource().getCountries().getCountry().size() > 100);
+	}
+
+	@Test
+	public void returnsCities() throws ApiException {
+		CitiesResponse cities = sut.cities(null, null);
+		Assert.assertTrue(cities.getCityResource().getCities().getCity().size() > 100);
+	}
+
+	@Test
+	public void returnsAirports() throws ApiException {
+		AirportsResponse airports = sut.airports(null, null, null);
+		Assert.assertTrue(airports.getAirportResource().getAirports().getAirport().size() > 100);
+	}
+
+	@Test
+	public void returnsNearestAirports() throws ApiException {
+		NearestAirportsResponse airports = sut.nearestAirports(50.110556, 8.682222, null);
+		Assert.assertEquals(5, airports.getNearestAirportResource().getAirports().getAirport().size());
+		Assert.assertEquals("FRA",
+				airports.getNearestAirportResource().getAirports().getAirport().get(0).getAirportCode());
+	}
+
+	@Test
+	public void returnsAirlines() throws ApiException {
+		AirlinesResponse airlines = sut.airlines(null);
+		Assert.assertTrue(airlines.getAirlineResource().getAirlines().getAirline().size() > 100);
+	}
+
+	@Test
+	public void returnsAircrafts() throws ApiException {
+		AircraftSummariesResponse aircrafts = sut.aircraftSummaries(null);
+		Assert.assertTrue(aircrafts.getAircraftResource().getAircraftSummaries().getAircraftSummary().size() > 100);
+	}
+
 }
