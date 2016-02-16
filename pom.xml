@@ -3,7 +3,7 @@
 	<groupId>org.hisrc.lhapi</groupId>
 	<artifactId>lhapi-client-project</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>Java Client for the LH Public API - Project</name>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
