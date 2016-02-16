@@ -4,7 +4,7 @@
 	<artifactId>lhapi-client-project</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0.1-SNAPSHOT</version>
-	<name>Java Client for LH Public API - Project</name>
+	<name>Java Client for the LH Public API - Project</name>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>

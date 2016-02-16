@@ -73,18 +73,21 @@ public class AuthenticatingLhApiClientTest {
 	@Test
 	public void returnsCountries() throws ApiException {
 		CountriesResponse countries = sut.countries(null, null);
+		System.out.println("Countries: " + countries.getCountryResource().getCountries().getCountry().size());
 		Assert.assertTrue(countries.getCountryResource().getCountries().getCountry().size() > 100);
 	}
 
 	@Test
 	public void returnsCities() throws ApiException {
 		CitiesResponse cities = sut.cities(null, null);
+		System.out.println("Cities: " + cities.getCityResource().getCities().getCity().size());
 		Assert.assertTrue(cities.getCityResource().getCities().getCity().size() > 100);
 	}
 
 	@Test
 	public void returnsAirports() throws ApiException {
 		AirportsResponse airports = sut.airports(null, null, null);
+		System.out.println("Airports: " + airports.getAirportResource().getAirports().getAirport().size());
 		Assert.assertTrue(airports.getAirportResource().getAirports().getAirport().size() > 100);
 	}
 
@@ -99,12 +102,14 @@ public class AuthenticatingLhApiClientTest {
 	@Test
 	public void returnsAirlines() throws ApiException {
 		AirlinesResponse airlines = sut.airlines(null);
+		System.out.println("Airlines: " + airlines.getAirlineResource().getAirlines().getAirline().size());
 		Assert.assertTrue(airlines.getAirlineResource().getAirlines().getAirline().size() > 100);
 	}
 
 	@Test
 	public void returnsAircrafts() throws ApiException {
 		AircraftSummariesResponse aircrafts = sut.aircraftSummaries(null);
+		System.out.println("Aircrafts: " + aircrafts.getAircraftResource().getAircraftSummaries().getAircraftSummary().size());
 		Assert.assertTrue(aircrafts.getAircraftResource().getAircraftSummaries().getAircraftSummary().size() > 100);
 	}
 
