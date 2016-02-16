@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FlightArrivalsStatsTest {
+public class RunFlightArrivalsStats {
 
 	private static final String CLIENT_SECRET_PROPERTY_KEY = "client_secret";
 	private static final String CLIENT_ID_PROPERTY_KEY = "client_id";
