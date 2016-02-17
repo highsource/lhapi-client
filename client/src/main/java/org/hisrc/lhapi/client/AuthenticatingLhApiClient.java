@@ -19,6 +19,8 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.sun.jersey.api.client.ClientHandlerException;
+
 public class AuthenticatingLhApiClient implements LhApiClient {
 
 	// Expiration buffer - 15 minutes
@@ -42,26 +44,31 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 		this.clientSecret = clientSecret;
 	}
 
-	private void refreshAccessToken() throws ApiException {
-		final long currentTimestamp = System.currentTimeMillis();
-		final AccessToken accessToken = api.oauthTokenPost(this.clientId, this.clientSecret, GRANT_TYPE);
-		if (accessToken == null) {
-			throw new ApiException("Authentication returned null access token.");
+	private void refreshAccessToken() throws LhApiException {
+		try {
+			final long currentTimestamp = System.currentTimeMillis();
+			final AccessToken accessToken = api.oauthTokenPost(this.clientId, this.clientSecret, GRANT_TYPE);
+			if (accessToken == null) {
+				throw new ApiException("Authentication returned null access token.");
+			}
+			final String token = accessToken.getAccessToken();
+			if (token == null) {
+				throw new ApiException("Authentication returned null token.");
+			}
+			final Integer expiresIn = accessToken.getExpiresIn();
+			if (expiresIn == null) {
+				throw new ApiException("Authentication returned null expiration date.");
+			}
+			this.apiClient.setApiKey(API_KEY_PREFIX_BEARER + " " + token);
+			this.accessTokenExpirationTimestamp = currentTimestamp + (expiresIn.intValue() * 1000) - EXPIRATION_BUFFER;
+		} catch (ApiException apiex) {
+			throw new LhApiException("Error refreshing the access token.", apiex);
+
 		}
-		final String token = accessToken.getAccessToken();
-		if (token == null) {
-			throw new ApiException("Authentication returned null token.");
-		}
-		final Integer expiresIn = accessToken.getExpiresIn();
-		if (expiresIn == null) {
-			throw new ApiException("Authentication returned null expiration date.");
-		}
-		this.apiClient.setApiKey(API_KEY_PREFIX_BEARER + " " + token);
-		this.accessTokenExpirationTimestamp = currentTimestamp + (expiresIn.intValue() * 1000) - EXPIRATION_BUFFER;
 	}
 
 	@Override
-	public CountriesResponse countries(String countryCode, String lang) throws ApiException {
+	public CountriesResponse countries(String countryCode, String lang) throws LhApiException {
 		final String _lang = lang == null ? "EN" : lang;
 		if (countryCode == null) {
 			return executeAuthentified(() -> referencesCountriesGet(_lang));
@@ -71,7 +78,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public CitiesResponse cities(String cityCode, String lang) throws ApiException {
+	public CitiesResponse cities(String cityCode, String lang) throws LhApiException {
 		final String _lang = lang == null ? "EN" : lang;
 		if (cityCode == null) {
 			return executeAuthentified(() -> referencesCitiesGet(_lang));
@@ -81,7 +88,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public AirportsResponse airports(String airportCode, String lang, Boolean lhOperates) throws ApiException {
+	public AirportsResponse airports(String airportCode, String lang, Boolean lhOperates) throws LhApiException {
 		final String _lang = lang == null ? "EN" : lang;
 		if (airportCode == null) {
 			return executeAuthentified(() -> referencesAirportsGet(_lang, lhOperates));
@@ -91,13 +98,14 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public NearestAirportsResponse nearestAirports(Double latitude, Double longitude, String lang) throws ApiException {
+	public NearestAirportsResponse nearestAirports(Double latitude, Double longitude, String lang)
+			throws LhApiException {
 		final String _lang = lang == null ? "EN" : lang;
 		return executeAuthentified(() -> referencesAirportsNearestLatitudelongitudeGet(latitude, longitude, _lang));
 	}
 
 	@Override
-	public AirlinesResponse airlines(String airlineCode) throws ApiException {
+	public AirlinesResponse airlines(String airlineCode) throws LhApiException {
 		if (airlineCode == null) {
 			return executeAuthentified(() -> referencesAirlinesGet());
 		} else {
@@ -106,7 +114,7 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public AircraftSummariesResponse aircraftSummaries(String aircraftCode) throws ApiException {
+	public AircraftSummariesResponse aircraftSummaries(String aircraftCode) throws LhApiException {
 		if (aircraftCode == null) {
 			return executeAuthentified(() -> referencesAircraftGet());
 		} else {
@@ -115,25 +123,25 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	}
 
 	@Override
-	public FlightStatusResponse flightStatus(String flightNumber, LocalDate date) throws ApiException {
+	public FlightStatusResponse flightStatus(String flightNumber, LocalDate date) throws LhApiException {
 		return executeAuthentified(() -> operationsFlightstatusFlightNumberDateGet(flightNumber, date));
 	}
 
 	@Override
 	public FlightsStatusResponse arrivalsStatus(String airportCode, LocalDateTime from, LocalDateTime until)
-			throws ApiException {
+			throws LhApiException {
 		return executeAuthentified(
 				() -> operationsFlightstatusArrivalsAirportCodeFromUntilGet(airportCode, from, until));
 	}
 
 	@Override
 	public FlightsStatusResponse departuresStatus(String airportCode, LocalDateTime from, LocalDateTime until)
-			throws ApiException {
+			throws LhApiException {
 		return executeAuthentified(
 				() -> operationsFlightstatusDeparturesAirportCodeFromUntilGet(airportCode, from, until));
 	}
 
-	private <T> T executeAuthentified(ApiOperation<T> operation) throws ApiException {
+	private <T> T executeAuthentified(ApiOperation<T> operation) throws LhApiException {
 		final long currentTimestamp = System.currentTimeMillis();
 		if (this.accessTokenExpirationTimestamp < currentTimestamp) {
 			refreshAccessToken();
@@ -146,7 +154,16 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 			// token
 			// So refresh it and try again
 			refreshAccessToken();
-			return operation.execute();
+			try {
+				return operation.execute();
+			} catch (ApiException apiex1) {
+				throw new LhApiException("Could not execute the operation.", apiex1);
+
+			} catch (ClientHandlerException chex1) {
+				throw new LhApiException("Could not execute the operation.", new ApiException(chex1));
+			}
+		} catch (ClientHandlerException chex) {
+			throw new LhApiException("Could not execute the operation.", new ApiException(chex));
 		}
 	}
 

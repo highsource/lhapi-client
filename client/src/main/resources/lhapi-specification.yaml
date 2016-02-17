@@ -705,11 +705,14 @@ definitions:
     type: object
     required:
       - Names
+      - AircraftCode
       - AirlineEquipCode
       - MediaLinks
     properties:
       Names:
         $ref: '#/definitions/Names'
+      AircraftCode:
+        type: string
       AirlineEquipCode:
         type: string
       MediaLinks:

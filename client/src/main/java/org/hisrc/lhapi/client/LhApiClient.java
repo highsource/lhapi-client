@@ -1,6 +1,5 @@
 package org.hisrc.lhapi.client;
 
-import org.hisrc.lhapi.client.invoker.ApiException;
 import org.hisrc.lhapi.client.model.AircraftSummariesResponse;
 import org.hisrc.lhapi.client.model.AirlinesResponse;
 import org.hisrc.lhapi.client.model.AirportsResponse;
@@ -14,25 +13,24 @@ import org.joda.time.LocalDateTime;
 
 public interface LhApiClient {
 
-	CountriesResponse countries(String countryCode, String lang) throws ApiException;
-	
-	CitiesResponse cities(String cityCode, String lang) throws ApiException;
+	CountriesResponse countries(String countryCode, String lang) throws LhApiException;
 
-	AirportsResponse airports(String airportCode, String lang, Boolean lhOperates) throws ApiException;
-	
-	NearestAirportsResponse nearestAirports(Double latitude, Double longitude, String lang) throws ApiException;
+	CitiesResponse cities(String cityCode, String lang) throws LhApiException;
 
-	AirlinesResponse airlines(String airlineCode) throws ApiException;
+	AirportsResponse airports(String airportCode, String lang, Boolean lhOperates) throws LhApiException;
 
-	AircraftSummariesResponse aircraftSummaries(String aircraftCode) throws ApiException;
+	NearestAirportsResponse nearestAirports(Double latitude, Double longitude, String lang) throws LhApiException;
 
-	FlightStatusResponse flightStatus(String flightNumber, LocalDate date) throws ApiException;
+	AirlinesResponse airlines(String airlineCode) throws LhApiException;
+
+	AircraftSummariesResponse aircraftSummaries(String aircraftCode) throws LhApiException;
+
+	FlightStatusResponse flightStatus(String flightNumber, LocalDate date) throws LhApiException;
 
 	FlightsStatusResponse arrivalsStatus(String airportCode, LocalDateTime from, LocalDateTime until)
-			throws ApiException;
+			throws LhApiException;
 
 	FlightsStatusResponse departuresStatus(String airportCode, LocalDateTime from, LocalDateTime until)
-			throws ApiException;
-
+			throws LhApiException;
 
 }
