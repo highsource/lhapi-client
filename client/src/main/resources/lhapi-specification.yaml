@@ -877,15 +877,15 @@ definitions:
       AirportCode:
         type: string
       ScheduledTimeLocal:
-        $ref: '#/definitions/DateTimeObject'
+        $ref: '#/definitions/LocalDateTimeObject'
       ScheduledTimeUTC:
         $ref: '#/definitions/DateTimeObject'
       ActualTimeLocal:
-        $ref: '#/definitions/DateTimeObject'
+        $ref: '#/definitions/LocalDateTimeObject'
       ActualTimeUTC:
         $ref: '#/definitions/DateTimeObject'
       EstimatedTimeLocal:
-        $ref: '#/definitions/DateTimeObject'
+        $ref: '#/definitions/LocalDateTimeObject'
       EstimatedTimeUTC:
         $ref: '#/definitions/DateTimeObject'
       TimeStatus:
@@ -927,6 +927,13 @@ definitions:
           - NA # No status
       Definition:
         type: string
+  LocalDateTimeObject:
+    type: object
+    required:
+      - DateTime
+    properties:
+      DateTime:
+        $ref: '#/definitions/LocalDateTime'
   DateTimeObject:
     type: object
     required:
