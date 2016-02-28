@@ -4,7 +4,6 @@ import org.apache.commons.lang3.Validate;
 import org.hisrc.lhapi.client.api.DefaultApi;
 import org.hisrc.lhapi.client.invoker.ApiClient;
 import org.hisrc.lhapi.client.invoker.ApiException;
-import org.hisrc.lhapi.client.invoker.CustomizedApiClient;
 import org.hisrc.lhapi.client.model.AccessToken;
 import org.hisrc.lhapi.client.model.AircraftSummariesResponse;
 import org.hisrc.lhapi.client.model.AirlinesResponse;
@@ -19,6 +18,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.sun.jersey.api.client.ClientHandlerException;
 
 public class AuthenticatingLhApiClient implements LhApiClient {
@@ -30,18 +30,28 @@ public class AuthenticatingLhApiClient implements LhApiClient {
 	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
 	private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm");
 
-	private final ApiClient apiClient = new CustomizedApiClient();
-	private final DefaultApi api = new DefaultApi(this.apiClient);
+	private final ApiClient apiClient;
+	private final DefaultApi api;
 	private final String clientId;
 	private final String clientSecret;
 
 	private long accessTokenExpirationTimestamp = Long.MIN_VALUE;
 
-	public AuthenticatingLhApiClient(final String clientId, final String clientSecret) {
+	public AuthenticatingLhApiClient(final String basePath, final String clientId, final String clientSecret) {
 		Validate.notNull(clientId);
 		Validate.notNull(clientSecret);
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
+		this.apiClient = new ApiClient();
+		this.apiClient.getObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+		if (basePath != null) {
+			this.apiClient.setBasePath(basePath);
+		}
+		this.api = new DefaultApi(this.apiClient);
+	}
+
+	public AuthenticatingLhApiClient(final String clientId, final String clientSecret) {
+		this(null, clientId, clientSecret);
 	}
 
 	private void refreshAccessToken() throws LhApiException {
