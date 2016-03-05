@@ -793,7 +793,9 @@ definitions:
       - Name
     properties:
       Name:
-        $ref: '#/definitions/Name'
+        type: array
+        items:
+          $ref: '#/definitions/Name'
   Name:
     type: object
     required:
