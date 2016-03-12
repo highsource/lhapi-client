@@ -25,6 +25,7 @@ public class AuthenticatingLhApiClientTest {
 
 	private static final String CLIENT_SECRET_PROPERTY_KEY = "client_secret";
 	private static final String CLIENT_ID_PROPERTY_KEY = "client_id";
+	private static final String BASEPATH_PROPERTY_KEY = "basePath";
 	private static final String LHAPI_PROPERTIES_RESOURCE_NAME = "lhapi.properties";
 	private LhApiClient sut;
 
@@ -37,6 +38,7 @@ public class AuthenticatingLhApiClientTest {
 		properties.load(is);
 		final String clientId = properties.getProperty(CLIENT_ID_PROPERTY_KEY);
 		final String clientSecret = properties.getProperty(CLIENT_SECRET_PROPERTY_KEY);
+//		final String basePath = properties.getProperty(BASEPATH_PROPERTY_KEY);
 		Assert.assertNotNull(clientId);
 		Assert.assertNotNull(clientSecret);
 		sut = new AuthenticatingLhApiClient(clientId, clientSecret);
